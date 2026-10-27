@@ -444,9 +444,13 @@ paths:
         controlled by the details parameter.
 
         At details=basic, mempool transactions are not aggregated:
-        unconfirmedBalance, unconfirmedSending, and unconfirmedReceiving are
-        omitted, and unconfirmedTxs reports the raw mempool index size for the
-        address.
+        unconfirmedBalance, unconfirmedSending, unconfirmedReceiving, and
+        immatureBalance are omitted, and unconfirmedTxs reports the raw mempool
+        index size for the address.
+
+        For Bitcoin-like coins, immatureBalance is the part of balance held in
+        coinbase outputs below the minimum coinbase confirmations, which cannot
+        be spent yet.
 
         Load estimate: Variable; basic is low, token/tokenBalances and
         txids/txslight are medium, and txs can be high as it grows with
@@ -2337,6 +2341,8 @@ components:
         unconfirmedSending:
           $ref: "#/components/schemas/AmountString"
         unconfirmedReceiving:
+          $ref: "#/components/schemas/AmountString"
+        immatureBalance:
           $ref: "#/components/schemas/AmountString"
         txs:
           type: integer

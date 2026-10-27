@@ -813,6 +813,25 @@ func httpTestsBitcoinType(t *testing.T, ts *httptest.Server) {
 			},
 		},
 		{
+			name:        "apiAddress v2 immature coinbase",
+			r:           newGetRequest(ts.URL + "/api/v2/address/" + dbtestdata.AddrA),
+			status:      http.StatusOK,
+			contentType: "application/json; charset=utf-8",
+			body: []string{
+				`"balance":"1360030331"`,
+				`"unconfirmedTxs":0,"immatureBalance":"1360030331","txs":1,`,
+			},
+		},
+		{
+			name:        "apiAddress v2 immature coinbase details=basic",
+			r:           newGetRequest(ts.URL + "/api/v2/address/" + dbtestdata.AddrA + "?details=basic"),
+			status:      http.StatusOK,
+			contentType: "application/json; charset=utf-8",
+			body: []string{
+				`{"address":"mzVznVsCHkVHX9UN8WPFASWUUHtxnNn4Jj","balance":"1360030331","totalReceived":"1360030331","totalSent":"0","unconfirmedTxs":0,"txs":1}`,
+			},
+		},
+		{
 			name:        "apiAddress v2 details=txs",
 			r:           newGetRequest(ts.URL + "/api/v2/address/mv9uLThosiEnGRbVPS7Vhyw6VssbVRsiAw?details=txs"),
 			status:      http.StatusOK,
@@ -1831,11 +1850,12 @@ func setupChain(t *testing.T) (bchain.BlockChainParser, bchain.BlockChain) {
 	parser := btc.NewBitcoinParser(
 		btc.GetChainParams("test"),
 		&btc.Configuration{
-			BlockAddressesToKeep:  1,
-			XPubMagic:             70617039,
-			XPubMagicSegwitP2sh:   71979618,
-			XPubMagicSegwitNative: 73342198,
-			Slip44:                1,
+			BlockAddressesToKeep:         1,
+			XPubMagic:                    70617039,
+			XPubMagicSegwitP2sh:          71979618,
+			XPubMagicSegwitNative:        73342198,
+			Slip44:                       1,
+			MinimumCoinbaseConfirmations: 100,
 		})
 
 	chain, err := dbtestdata.NewFakeBlockChain(parser)

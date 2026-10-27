@@ -415,6 +415,8 @@ export interface Address {
     unconfirmedSending?: string;
     /** Unconfirmed incoming balance for this address. */
     unconfirmedReceiving?: string;
+    /** Part of the confirmed balance in coinbase outputs below the minimum coinbase confirmations, which cannot be spent yet. Bitcoin-like coins only; omitted for AccountDetailsBasic. */
+    immatureBalance?: string;
     /** Number of transactions for this address (including confirmed). */
     txs: number;
     /** Historical total count of transactions, if known. */
